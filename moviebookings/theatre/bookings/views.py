@@ -8,8 +8,9 @@ from django.contrib.auth.models import User
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 from twilio.rest import Client
-from dotenv import load_dotenv
 import os
+ 
+
 
 
 
@@ -103,7 +104,7 @@ class CreatePaymentTransactionsView(APIView):
         TWILIO_ACCOUNT_SID = os.getenv('TWILIO_ACCOUNT_SID') 
         TWILIO_AUTH_TOKEN = os.getenv("TWILIO_AUTH_TOKEN")
         TWILIO_PHONE_NUMBER = '+12562554458'
-        recipient_phone_number = data.get('phone', '917558164183')  
+        recipient_phone_number = data.get('phone', '919159695481')  
 
         client = Client(TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN)
 
