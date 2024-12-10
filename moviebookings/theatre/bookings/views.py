@@ -8,6 +8,8 @@ from django.contrib.auth.models import User
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 from twilio.rest import Client
+from dotenv import load_dotenv
+import os
 
 
 
@@ -80,13 +82,10 @@ class CreateUserprofileView(APIView):
     #     paymentTransactions.save()
     #     serializer=PaymentTransactionsSerializers(paymentTransactions).data
     #     return Response(serializer)
-    
-from twilio.rest import Client
-
 class CreatePaymentTransactionsView(APIView):
     def post(self, request):  
         data = request.data
-        movie = Movie.objects.create(title=data['title']) 
+        movie = Movie.objects.create(title=data['title'])
         show = Show.objects.create(movie=movie)
         booking = Booking.objects.create(show=show)
         payment_transaction = PaymentTransactions.objects.create(
@@ -98,8 +97,11 @@ class CreatePaymentTransactionsView(APIView):
         payment_transaction.save()
         transaction_id = payment_transaction.id
 
-        TWILIO_ACCOUNT_SID = 'AC574aa144161057e8f02b77f7532bfc3d'
-        TWILIO_AUTH_TOKEN = '232928a39a840e4d77d5d56ce0beabee'
+
+        load_dotenv()
+
+        TWILIO_ACCOUNT_SID = os.getenv('TWILIO_ACCOUNT_SID') 
+        TWILIO_AUTH_TOKEN = os.getenv("TWILIO_AUTH_TOKEN")
         TWILIO_PHONE_NUMBER = '+12562554458'
         recipient_phone_number = data.get('phone', '917558164183')  
 
@@ -119,10 +121,8 @@ class CreatePaymentTransactionsView(APIView):
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
        
-        return Response({
-            "payment_transaction_id": transaction_id,
-            "twilio_call_sid": call.sid
-        }, status=201)
+        return Response({"payment_transaction_id": transaction_id,
+            "twilio_call_sid": call.sid},status=201)
     
 
 class UpdateBookingView(APIView):
